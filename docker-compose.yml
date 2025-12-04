@@ -24,16 +24,16 @@ services:
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
-    ports:
-      - "8081:8081"
+    expose:
+      - "8081"
 
   frontend:
     build: ./frontend
     container_name: frontend
     depends_on:
       - backend
-    ports:
-      - "8080:8080"
+    expose:
+      - "8080"
 
 volumes:
   db_data:
