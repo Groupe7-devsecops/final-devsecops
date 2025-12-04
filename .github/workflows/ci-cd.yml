@@ -30,3 +30,16 @@ jobs:
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH,MEDIUM'
           exit-code: '1'
+
+  # Déploiement sur Coolify via Webhook (seulement sur main, après build)
+  deploy:
+    needs: security
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+ 
+    steps:
+      - name: Trigger Coolify Webhook
+        run: |
+          curl --location "${{ secrets.COOLIFY_WEBHOOK_URL }}" \
+            --header "Content-Type: text/plain" \
+            --header "Authorization: Bearer ${{ secrets.TOKEN_COOLIFY }}"
