@@ -1,0 +1,32 @@
+name: SAST checks
+
+on:
+  push:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # TruffleHog – secrets scanning
+      - name: Run TruffleHog
+        uses: trufflesecurity/trufflehog@v3.88.7
+        with:
+          scanArguments: >
+            filesystem --fail --results=verified,unknown .
+
+      # Trivy – scan du repo (vuln + misconfig + secrets)
+      - name: Run Trivy filesystem scan
+        uses: aquasecurity/trivy-action@0.32.0
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          scanners: 'vuln,secret,misconfig'
+          ignore-unfixed: true
+          severity: 'CRITICAL,HIGH,MEDIUM'
+          exit-code: '1'
