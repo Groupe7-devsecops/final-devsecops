@@ -8,7 +8,7 @@ on:
 jobs:
 
   # ---------------------------
-  # 🔐 1. Sécurité (SAST + Secrets + Misconfig)
+  # Sécurité 
   # ---------------------------
   security:
     runs-on: ubuntu-latest
@@ -36,7 +36,7 @@ jobs:
           exit-code: '1'
 
   # ---------------------------
-  # 🚀 2. Déploiement (seulement sur main)
+  #  Déploiement 
   # ---------------------------
   deploy:
     needs: security
