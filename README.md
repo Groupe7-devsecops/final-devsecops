@@ -37,14 +37,14 @@ Ce projet utilise un workflow Git inspiré de Gitflow, avec trois types de branc
 
 - Le projet est entièrement conteneurisé à l’aide de Docker et orchestré via Docker Compose.
 - L’architecture comprend :
-        Base de données PostgreSQL
-        Initialisation automatique via scripts SQL
-        Persistance assurée via un volume dédié
+    - Base de données PostgreSQL
+        - Initialisation automatique via scripts SQL
+        - Persistance assurée via un volume dédié
     - Backend Go
-        Compilation dans une image builder optimisée
-        Exécution dans une image Alpine minimaliste
-        Respect des bonnes pratiques : utilisateur non-root, binaire statique, environnement isolé
+        - Compilation dans une image builder optimisée
+        - Exécution dans une image Alpine minimaliste
+        - Respect des bonnes pratiques : utilisateur non-root, binaire statique, environnement isolé
     - Frontend (Nginx)
-        Build du projet puis déploiement sur un serveur Nginx sécurisé
-        Configuration personnalisée et exécution sous utilisateur non-root
-        Cette structure garantit des images légères, sécurisées et prêtes pour un déploiement automatisé sur Coolify.
+        - Build du projet puis déploiement sur un serveur Nginx sécurisé
+        - Configuration personnalisée et exécution sous utilisateur non-root
+        - Cette structure garantit des images légères, sécurisées et prêtes pour un déploiement automatisé sur Coolify.
