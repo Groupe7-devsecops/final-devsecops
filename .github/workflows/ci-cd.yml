@@ -1,0 +1,62 @@
+name: CI/CD DevSecOps
+
+on:
+  push:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  # ---------------------------
+  # Sécurité 
+  # ---------------------------
+  security:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # TruffleHog – secrets scanning
+      - name: Run TruffleHog
+        uses: trufflesecurity/trufflehog@v3.88.7
+        with:
+          scanArguments: >
+            filesystem --fail --results=verified,unknown .
+
+      # Trivy – repo scan
+      - name: Run Trivy filesystem scan
+        uses: aquasecurity/trivy-action@0.32.0
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          scanners: 'vuln,secret,misconfig'
+          ignore-unfixed: true
+          severity: 'CRITICAL,HIGH,MEDIUM'
+          exit-code: '1'
+
+  # ---------------------------
+  #  Déploiement 
+  # ---------------------------
+  deploy:
+    needs: security
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Recréation du .env depuis le secret GitHub
+      - name: Create .env from GitHub secret
+        run: |
+          printf '%s\n' "${{ secrets.DOTENV }}" > .env
+
+    
+
+      # Déploiement via Coolify
+      - name: Trigger Coolify Webhook
+        run: |
+          curl --location "${{ secrets.COOLIFY_WEBHOOK_URL }}" \
+            --header "Content-Type: text/plain" \
+            --header "Authorization: Bearer ${{ secrets.TOKEN_COOLIFY }}"
